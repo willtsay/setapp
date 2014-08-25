@@ -1,25 +1,30 @@
-app.controller('SetController', ['$scope', SetController])
+app.controller('SetController', ['$scope', '$timeout', SetController])
 
-function SetController($scope){
-  $scope.board = board
+function SetController($scope, $timeout){
+  $scope.board = riggedBoard
   $scope.deck = deck
+  $scope.points = 0
   $scope.selectedCards = []
+  $scope.enableCardClicks = false
   $scope.addToSelectedCards = function($index){
-    if ($.inArray($scope.board[$index], $scope.selectedCards) != -1) {
-      return null
-    } else {
-      if ($scope.selectedCards.length >= 3) {
-        $scope.selectedCards.shift()
-      }
-      $scope.selectedCards.push($scope.board[$index])
-      if ($scope.selectedCards.length == 3) {
-        if ($scope.isItSet()) {
-          $scope.isSet=true
+    if ($scope.enableCardClicks) {
+      if ($.inArray($scope.board[$index], $scope.selectedCards) != -1) {
+        return null
+      } else {
+        if ($scope.selectedCards.length >= 3) {
+          $scope.selectedCards.shift()
+        }
+        $scope.selectedCards.push($scope.board[$index])
+        if ($scope.selectedCards.length == 3) {
+          if ($scope.isItSet()) {
+            $scope.isSet=true
+          }
         }
       }
-    }
-    console.log($scope.selectedCards)
+      console.log($scope.selectedCards)
+    }      
   }
+
   $scope.inSelectedCards = function($index){
     if ($.inArray($scope.board[$index], $scope.selectedCards) != -1)
       return true
@@ -31,15 +36,39 @@ function SetController($scope){
       for (i=0; i<4; i++) {
         if ((c1[i]==c2[i] && c2[i]==c3[i]) || (c1[i]!=c2[i] && c2[i]!=c3[i] && c1[i]!=c3[i])){   
         } else {
-          console.log("FALS")
+          $scope.isSet=false
+          $timeout.cancel(prom)
+          $scope.points--
+          $scope.enableCardClicks = false
+          $scope.selectedCards = []
           return false
         }
       }
+      $timeout.cancel(prom)
+      $scope.points++
+      $scope.enableCardClicks = false
+      $scope.selectedCards = []
       return true
     }
   }
-
+  $scope.deductPoints = function() {
+    $scope.points--
+    $scope.enableCardClicks = false
+  }
+  $scope.set = function(){
+    $scope.enableCardClicks = true
+    prom = $timeout($scope.deductPoints,10000)
+  }
 }
+
+
+
+
+
+
+
+
+
 
 function Card(colour,shape,shading,number){
   this.stats = [colour+1,shape+1,shading+1,number+1]
@@ -50,8 +79,9 @@ function Card(colour,shape,shading,number){
 function makeRiggedBoard(){
   board = []
   for (i=0;i<12;i++){
-    board.push(new Card(1,1,1,1))
+    board.push(new Card(i,i,i,i))
   }
+  board.push(new Card(1,1,1,2))
   return board
 }
 function makeDeck(){
