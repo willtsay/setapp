@@ -1,0 +1,11 @@
+body {
+  font-family: sans-serif;
+}
+
+.highlighted {
+  background-color: blue;
+}
+
+div {
+  cursor:pointer;
+}

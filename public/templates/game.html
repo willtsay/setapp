@@ -1,0 +1,5 @@
+
+<div ng-repeat="card in board">
+  <div ng-click="addToSelectedIndexes($index)" ng-class="{'highlighted': inSelectedIndexes($index)}">{{card}}</div>
+</div>
+
