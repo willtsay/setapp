@@ -1,5 +1,6 @@
 
 <div ng-repeat="card in board">
-  <div ng-click="addToSelectedIndexes($index)" ng-class="{'highlighted': inSelectedIndexes($index)}">{{card}}</div>
+  <div ng-click="addToSelectedCards($index)" ng-class="{'highlighted': inSelectedCards($index)}">{{card}}</div>
 </div>
+<div ng-show="isSet()">ITS A SET</div>
 

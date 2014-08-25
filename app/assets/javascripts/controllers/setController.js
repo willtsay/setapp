@@ -3,21 +3,31 @@ app.controller('SetController', ['$scope', SetController])
 function SetController($scope){
   $scope.board = board
   $scope.deck = deck
-  $scope.selectedIndexes = []
-  $scope.addToSelectedIndexes = function($index){
-    if ($.inArray($index, $scope.selectedIndexes) != -1) {
+  $scope.selectedCards = []
+  $scope.addToSelectedCards = function($index){
+    if ($.inArray($index, $scope.selectedCards) != -1) {
       return null
     } else {
-      if ($scope.selectedIndexes.length >= 3) {
-        $scope.selectedIndexes.shift()
+      if ($scope.selectedCards.length >= 3) {
+        if ($scope.selectedCards.length == 3) {
+          
+        }
+        $scope.selectedCards.shift()
       }
-      $scope.selectedIndexes.push($index)
+      $scope.selectedCards.push($index)
     }
+    $scope.isSet()
   }
-  $scope.inSelectedIndexes = function($index){
-    if ($.inArray($index, $scope.selectedIndexes) != -1)
+  $scope.inSelectedCards = function($index){
+    if ($.inArray($index, $scope.selectedCards) != -1)
       return true
   }
+  $scope.isSet = function(){
+    if ($scope.selectedCards.length == 3){
+      return true
+    }
+  }
+
 }
 
 function makeDeck(){
@@ -28,7 +38,6 @@ function makeDeck(){
   }
   return deck
 }
-
 
 
 var deck = makeDeck()
