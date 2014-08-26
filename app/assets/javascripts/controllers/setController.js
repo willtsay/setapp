@@ -1,7 +1,15 @@
+// to add
+// board set checking 
+// replacing cards
+// graphics
+// animations
+
+
 app.controller('SetController', ['$scope', '$timeout', SetController])
 
 function SetController($scope, $timeout){
-  $scope.board = riggedBoard
+  $scope.solvable = solvable
+  $scope.board = board
   $scope.deck = deck
   $scope.points = 0
   $scope.selectedCards = []
@@ -59,8 +67,8 @@ function SetController($scope, $timeout){
     $scope.enableCardClicks = true
     prom = $timeout($scope.deductPoints,10000)
   }
-}
 
+}
 
 
 
@@ -92,7 +100,7 @@ function makeDeck(){
   return deck
 }
 
-var riggedBoard = makeRiggedBoard()
+// var riggedBoard = makeRiggedBoard()
 
 var deck = makeDeck()
 var board = makeBoard(deck)
@@ -102,4 +110,40 @@ function makeBoard(deck){
     board.push(deck.splice(Math.floor(Math.random() * deck.length), 1)[0])
   }
   return board
+}
+
+function solvableBoard(board,start){
+  console.log(start)
+  if (start == 10) {
+    return false
+  } else {
+
+    for(i = start+1; i < 11; i++) {
+      var second = i
+      console.log(start + "," + i)
+      for(b=second+1; b < 12; b++){
+        console.log(start+","+ second+","+b)
+        if (isAnswer(start,second,b)) {
+          console.log("IT'S HAPPENING")
+          return true
+        }
+
+      }     
+    }
+    solvableBoard(board,start+1)
+  }
+}
+
+var solvable = solvableBoard(board,0)
+
+function isAnswer(card1,card2,card3){
+  var c1=board[card1].stats,c2=board[card2].stats,c3=board[card3].stats
+  for (c=0; c<4; c++) {
+    if ((c1[c]==c2[c] && c2[c]==c3[c]) || (c1[c]!=c2[c] && c2[c]!=c3[c] && c1[c]!=c3[c])){   
+
+    } else {
+      return false
+    }
+  }
+  return true
 }
