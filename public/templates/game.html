@@ -1,9 +1,10 @@
 
-<div ng-click="set()">I SEE A SET</div>
-<div ng-repeat="card in board">
-  <div ng-click="addToSelectedCards($index)" ng-class="{'highlighted': inSelectedCards($index)}">{{card.display}}</div>
+<div ng-click="attemptSet()">I SEE A SET</div>
+<div class="board">
+<div ng-repeat="card in board" class="test card-block">
+  <div class="make-fat"ng-click="selectCard($index)" ng-class="{'highlighted': inSelectedCards($index)}">{{$index + ". " + card.display}}</div>
 </div>
 <div ng-show="isSet">ITS A SET</div>
 <div>{{points}}</div>
 <div id="solvable">{{solvable}}</div>
-
+</div>

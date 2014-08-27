@@ -14,53 +14,48 @@
 app.controller('SetController', ['$scope', '$timeout', SetController])
 
 function SetController($scope, $timeout){
-  $scope.solvable = "WORKING"
   $scope.board = board
   $scope.deck = deck
   $scope.points = 0
   $scope.selectedCards = []
-  $scope.enableCardClicks = false
-  $scope.addToSelectedCards = function($index){
-    if ($scope.enableCardClicks) {
-      if ($.inArray($scope.board[$index], $scope.selectedCards) != -1) {
-        return null
-      } else {
-        $scope.selectedCards.push($scope.board[$index])
-        if ($scope.selectedCards.length == 3) {
-          if ($scope.isItSet()) {
-            $scope.isSet=true
-            $scope.replaceUsedCards()
-            $scope.refreshBoard()
-          }
-        }
-      }
-    }      
-  }
-  $scope.inSelectedCards = function($index){
-    if ($.inArray($scope.board[$index], $scope.selectedCards) != -1)
-      return true
-  }
+  $scope.cardClicksEnabled = false
   $scope.isSet = false
-  $scope.isItSet = function(){
-    if ($scope.selectedCards.length == 3){
-      var c1 = $scope.selectedCards[0].stats, c2 = $scope.selectedCards[1].stats, c3 = $scope.selectedCards[2].stats,check = 0
-      for (i=0; i<4; i++) {
-        if ((c1[i]==c2[i] && c2[i]==c3[i]) || (c1[i]!=c2[i] && c2[i]!=c3[i] && c1[i]!=c3[i])){   
-        } else {
-          $scope.isSet=false
-          $timeout.cancel(prom)
-          $scope.points--
-          $scope.enableCardClicks = false
-          $scope.selectedCards = []
-          return false
+  $scope.selectCard = function($index){
+    if ($scope.cardClicksEnabled) {
+      if ($scope.cardNotYetSelected($index)){
+        $scope.addToSelectedCards($index)
+        if ($scope.threeCards()) {
+          if($scope.isValidSet()){
+            $scope.points++
+            $scope.replaceUsedCards()
+          } else {
+            $scope.points--
+          }
+          $scope.refreshBoard()
         }
       }
-      return true
     }
   }
-  $scope.deductPoints = function(){
-    $scope.points--
-    $scope.enableCardClicks = false
+  $scope.cardNotYetSelected = function($index){
+      return ($.inArray($scope.board[$index], $scope.selectedCards) == -1)
+  }
+  $scope.addToSelectedCards = function($index){
+    $scope.selectedCards.push($scope.board[$index])
+  }
+  $scope.threeCards = function(){
+    return $scope.selectedCards.length == 3
+  }
+  $scope.isValidSet = function(){
+    var c1 = $scope.selectedCards[0].stats
+    var c2 = $scope.selectedCards[1].stats
+    var c3 = $scope.selectedCards[2].stats
+    for (c=0; c<4; c++) {
+      if ((c1[c]==c2[c] && c2[c]==c3[c]) || (c1[c]!=c2[c] && c2[c]!=c3[c] && c1[c]!=c3[c])){   
+      } else {
+        return false
+      }
+    }
+    return true
   }
   $scope.replaceUsedCards = function(){
     console.log($scope.deck.length)
@@ -68,35 +63,26 @@ function SetController($scope, $timeout){
       var change = $scope.board.indexOf($scope.selectedCards[i])
       $scope.board[change] = $scope.deck.splice(Math.floor(Math.random() * deck.length), 1)[0]
     }
-
   }
-  $scope.set = function(){
-    $scope.enableCardClicks = true
+  $scope.attemptSet = function(){
+    $scope.cardClicksEnabled = true
     prom = $timeout($scope.deductPoints,10000)
   }
+  
   $scope.refreshBoard = function(){
     $timeout.cancel(prom)
-    $scope.points++
     $scope.enableCardClicks = false
     $scope.selectedCards = []
+  }
+  $scope.inSelectedCards = function($index){
+    return ($.inArray($scope.board[$index], $scope.selectedCards) != -1)
   }
 }
 
 function Card(colour,shape,shading,number){
   this.stats = [colour+1,shape+1,shading+1,number+1]
-
   this.display = (colour+1) +","+(shape+1)+","+(shading+1) +","+ (number+1)
 }
-
-function makeRiggedBoard(){
-  board = []
-  for (i=0;i<12;i++){
-    board.push(new Card(i,i,i,i))
-  }
-  board.push(new Card(1,1,1,2))
-  return board
-}
-
 function makeDeck(){
   deck = []
   for (i = 0; i < 81; i++){
@@ -104,10 +90,6 @@ function makeDeck(){
   }
   return deck
 }
-
-var deck = makeDeck()
-var board = makeBoard(deck)
-
 function makeBoard(deck){
   board = []
   for(i=0; i<12; i++){
@@ -115,39 +97,45 @@ function makeBoard(deck){
   }
   return board
 }
-
 function solvableBoard(board,start){
   console.log(start)
   if (start == 10) {
     return false
   } else {
-
     for(i = start+1; i < 11; i++) {
       var second = i
       console.log(start + "," + i)
       for(b=second+1; b < 12; b++){
         console.log(start+","+ second+","+b)
-        if (isAnswer(start,second,b)) {
-          console.log("IT'S HAPPENING")
+        if (isValidSet(board[start],board[second],board[b])) {
+          console.log("there be a set")
           return true
         }
-
       }     
     }
     solvableBoard(board,start+1)
   }
 }
-
-var solvable = solvableBoard(board,0)
-
-function isAnswer(card1,card2,card3){
-  var c1=board[card1].stats,c2=board[card2].stats,c3=board[card3].stats
+function isValidSet(card1,card2,card3){
+  var c1=card1.stats,c2=card2.stats,c3=card3.stats
   for (c=0; c<4; c++) {
     if ((c1[c]==c2[c] && c2[c]==c3[c]) || (c1[c]!=c2[c] && c2[c]!=c3[c] && c1[c]!=c3[c])){   
-
     } else {
       return false
     }
   }
   return true
 }
+
+var deck = makeDeck()
+var board = makeBoard(deck)
+var solvable = solvableBoard(board,0)
+// ======================DEBUGGING TYPE STUFF================================
+// function makeRiggedBoard(){
+//   board = []
+//   for (i=0;i<12;i++){
+//     board.push(new Card(i,i,i,i))
+//   }
+//   board.push(new Card(1,1,1,2))
+//   return board
+// }
