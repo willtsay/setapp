@@ -80,6 +80,12 @@ function SetController($scope, $timeout){
 }
 
 function Card(colour,shape,shading,number){
+  this.shape_t = ["triangle","rectangle","diamond"]
+  this.shading_t = ["border", "solid", "stripe"]
+  this.number_t = [1,2,3]
+  this.colour_t = ["b-01.png","g-01.png","r-01.png"]
+
+  this.location = "/images/setimages/" + this.shape_t[shape] + "/"+ this.shading_t[shading] + "/"+ this.number_t[number] + this.colour_t[colour]
   this.stats = [colour+1,shape+1,shading+1,number+1]
   this.display = (colour+1) +","+(shape+1)+","+(shading+1) +","+ (number+1)
 }
