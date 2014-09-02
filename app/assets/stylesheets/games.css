@@ -15,8 +15,8 @@ div {
 }
 
 .card-block{
-  width:200px;
-  height:150px;
+/*  width:200px;
+  height:150px;*/
   /*padding:20px 40px;*/
 }
 
@@ -25,6 +25,6 @@ div {
   height:450px;
 }
 
-.make-fat{
+/*.make-fat{
   padding:200px 150px;
-}
+}*/

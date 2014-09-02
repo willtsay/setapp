@@ -1,10 +1,8 @@
 <div ng-click="attemptSet()">I SEE A SET</div>
   <div class="board">
-  <div ng-repeat="card in board" class="test card-block">
+  <div ng-repeat="card in board track by $index" class="test card-block">
     <img ng-click="selectCard($index)" ng-class="{'highlighted': inSelectedCards($index)}" ng-src={{card.location}}>
-
   </div>
-
   <div>{{points}}</div>
   <div>{{answer}}</div>
 </div>

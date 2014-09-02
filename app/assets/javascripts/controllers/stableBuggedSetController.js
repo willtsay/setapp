@@ -1,7 +1,20 @@
+// to add
+// board set checking  DONE
+// replacing cards (ON USE )
+
+
+// refactor/additional functions
+// graphics
+// animations
+// multiplexer 
+// endless
+// users etc. 
+// porting to other stuffs
+
 app.controller('SetController', ['$scope', '$timeout', SetController])
 
 function SetController($scope, $timeout){
-  $scope.deck = makeObjectDeck
+  $scope.deck = makeDeck()
   $scope.board = makeSolvableBoard($scope.deck)
   $scope.points = 0
   $scope.selectedCards = []
@@ -53,7 +66,7 @@ function SetController($scope, $timeout){
     return ($.inArray($scope.board[$index], $scope.selectedCards) != -1)
   }
   $scope.replaceUsedCards = function(){
-    if ($scope.decklength < 3) { 
+    if ($scope.deck.length < 3) { 
       for(i=0; i<3; i++) {
       var change = $scope.board.indexOf($scope.selectedCards[i])
       $scope.board[change] = new emptyCard()
@@ -61,7 +74,7 @@ function SetController($scope, $timeout){
     } else {
       for (i=0; i<3; i++) {
         var change = $scope.board.indexOf($scope.selectedCards[i])
-        $scope.board[change] = $scope.deck.splice(Math.floor(Math.random() * $scope.decklength), 1)[0]
+        $scope.board[change] = $scope.deck.splice(Math.floor(Math.random() * $scope.deck.length), 1)[0]
       }
     }
   }
@@ -97,26 +110,30 @@ function SetController($scope, $timeout){
   }
   $scope.makeSolvableBoard = function(){
     // move board back into deck, redeal the board.
-    if ( $scope.decklength <= 20) {
+    if ($scope.deck.length <= 20) {
       if ($scope.deckUnsolvable(0)){
         console.log("game over")
         return false
       }
     } else {
-      $scope.reshuffle()
-      $scope.makeBoard()
+      $scope.selectedCards = []
+      $scope.deck = $scope.deck.concat($scope.board)
+      $scope.board = []
+      for(w=0; w<12; w++){
+        $scope.board.push($scope.deck.splice(Math.floor(Math.random() * $scope.deck.length), 1)[0])
+      }
       if ($scope.checkResetNeeded(0)){
         return $scope.makeSolvableBoard()
       }
     }
   }
   $scope.deckUnsolvable = function(start){
-    if (start == $scope.decklength-2) {
+    if (start == $scope.deck.length-2) {
       return true
     } else {
-      for(x = start+1; x < $scope.decklength-1; x++) {
+      for(x = start+1; x < $scope.deck.length-1; x++) {
         var second = x
-        for(y=second+1; y < $scope.decklength; y++){
+        for(y=second+1; y < $scope.deck.length; y++){
           if ($scope.isValidSet($scope.deck[start],$scope.deck[second],$scope.deck[y])) {
             $scope.reset = false
           } 
@@ -138,34 +155,24 @@ function SetController($scope, $timeout){
     }
     return true
   }
-  $scope.reshuffle = function(){
-    for(card in $scope.board){
-      $scope.deck[card.id] = card 
+  $scope.arrayIntersect = function(a, b){
+    var result = new Array();
+    while( a.length > 0 && b.length > 0 )
+    {  
+       if      (a[0] < b[0] ){ a.shift(); }
+       else if (a[0] > b[0] ){ b.shift(); }
+       else /* they're equal */
+       {
+         result.push(a.shift());
+         b.shift();
+       }
     }
-    $scope.board = []
-  }
-  $scope.decklength = function(){
-    return Object.keys($scope.deck).length
-  }
-  $scope.drawCard = function(){
-    for (var cardId in $scope.deck) {
-      if (Math.random() < 1/++count) {
-        var card = $scope.deck[cardId]
-        delete $scope.deck[cardId]
-        return card                
-      }
-    }
-  }
-  $scope.makeBoard = function(){
-    for (i = 0; i < 12; i++) {
-      $scope.board[i] = $scope.drawCard()
-    }
+    return result;
   }
 }
 //SET UP FUNCTIONS
-function Card(id, colour,shape,shading,number){
+function Card(colour,shape,shading,number){
   this.empty = false
-  this.id = id
   this.shape_t = ["triangle","rectangle","diamond"]
   this.shading_t = ["border", "solid", "stripe"]
   this.number_t = [1,2,3]
@@ -179,10 +186,18 @@ function emptyCard(){
   this.location = "/images/setimages/emptyset.png"
 }
 
+function makeDeck(){
+  deck = []
+  for (i = 0; i < 81; i++){
+    deck.push(new Card(i%3, Math.floor(i/3)%3, Math.floor(i/9)%3, Math.floor(i/27)%3))
+  }
+  return deck
+}
+
 function makeObjectDeck(){
   deck = {}
   for (i = 0; i < 81; i++){
-    deck[i] = new Card(i, i%3, Math.floor(i/3)%3, Math.floor(i/9)%3, Math.floor(i/27)%3)
+    deck[i] = new Card(i%3, Math.floor(i/3)%3, Math.floor(i/9)%3, Math.floor(i/27)%3)
   }
   return deck
 }
