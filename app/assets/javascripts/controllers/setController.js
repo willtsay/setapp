@@ -6,7 +6,7 @@ function SetController($scope, $timeout){
   $scope.points = 0
   $scope.selectedCards = []
   $scope.cardClicksEnabled = false
-  $scope.answer = "hey"
+  // $scope.answer = "hey"
   $scope.gameOver = false
   $scope.selectCard = function($index){
     if ($scope.cardClicksEnabled && $scope.cardNotYetSelected($index)) {
@@ -45,7 +45,7 @@ function SetController($scope, $timeout){
         for(b=second+1; b < 12; b++){
 
           if ($scope.isValidSet($scope.board[start],$scope.board[second],$scope.board[b])) {
-            $scope.answer= (start+1)+","+(second+1)+","+(b+1)
+            // $scope.answer= (start+1)+","+(second+1)+","+(b+1)
             return false
           } 
         }     
