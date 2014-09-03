@@ -9,3 +9,22 @@ body {
 div {
   cursor:pointer;
 }
+
+.test{
+  display:inline-block;
+}
+
+.card-block{
+/*  width:200px;
+  height:150px;*/
+  /*padding:20px 40px;*/
+}
+
+.board{
+  width:800px;
+  height:450px;
+}
+
+/*.make-fat{
+  padding:200px 150px;
+}*/
