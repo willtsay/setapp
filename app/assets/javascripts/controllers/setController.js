@@ -1,7 +1,5 @@
 app.controller('SetController', ['$scope', '$timeout', SetController])
 
-
-
 function SetController($scope, $timeout){
   $scope.deck = makeObjectDeck()
   $scope.board = makeFirstSolvableBoard($scope.deck)
