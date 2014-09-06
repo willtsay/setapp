@@ -25,6 +25,25 @@ div {
   height:450px;
 }
 
+div:focus {
+    outline:none;
+}
+
+.red{
+  background-color: red;
+}
+
+.green{
+  background-color: green;
+}
+
+.blue{
+  background-color: blue;
+}
+
+.yellow{
+  background-color: yellow;
+}
 /*.make-fat{
   padding:200px 150px;
 }*/
