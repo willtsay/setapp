@@ -20,13 +20,14 @@
   <div ng-show="optionsPicked">
     <!-- <div ng-show="timerType==tenminutes"></div> -->
     <span ng-repeat="player in setPlayers" ng-click="attemptSet(player.id)"  class={{player.color}}>{{player.text}}</span>
+    </br><span ng-repeat="player in setPlayers" class={{player.color}}>{{player.color}} points: {{player.points}}</span>
+    
     <div ng-show="timer!='notimer'">TIME:{{ timer | date: 'mm:ss'}} </div>
     <div>SET ATTEMPT TIMER:{{ attemptTimer | date: 's'}}</div>
     <div class="board">
       <div ng-repeat="card in board track by $index" class="test card-block">
         <img ng-click="selectCard($index)" ng-class="{'highlighted': inSelectedCards($index)}" ng-src={{card.location}}>
       </div>
-      </br><span ng-repeat="player in setPlayers" class={{player.color}}>{{player.color}} points: {{player.points}}</span>
       <div>{{answer}}</div>
     </div>
   </div>
